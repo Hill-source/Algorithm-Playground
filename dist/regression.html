@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Regression · Algorithm Playground</title>
+  <link rel="stylesheet" href="style.css"><link rel="stylesheet" href="regression.css">
+  <script type="module" src="regression-app.js"></script>
+</head>
+<body>
+  <header><a class="brand" href="./"><span class="brand-mark">⌘</span>Algorithm<span>Playground</span></a>
+    <nav class="experiment-nav" aria-label="Experiments"><a href="./">Neural network</a><a href="regression.html" aria-current="page">Regression</a><a href="kmeans.html">K-means</a></nav>
+    <button id="about">How it works</button>
+  </header>
+  <main>
+    <div class="intro"><p class="eyebrow">EXPERIMENT 02 / POLYNOMIAL REGRESSION</p></div>
+    <div class="workspace">
+      <aside class="panel controls">
+        <div class="section-title"><span class="number">01</span><h2>Build your experiment</h2></div>
+        <label for="degree">Model degree</label>
+        <select id="degree"><option value="1">1 · Linear · x</option><option value="2" selected>2 · Quadratic · x²</option><option value="3">3 · Cubic · x³</option><option value="4">4 · Quartic · x⁴</option><option value="5">5 · Quintic · x⁵</option><option value="6">6 · Sextic · x⁶</option></select>
+        <p class="hint">Includes all powers up to your chosen degree and an intercept. Changing degree resets training.</p>
+        <label>Dataset</label>
+        <div class="presets" role="group" aria-label="Sample datasets"><button data-preset="line"><span>╱</span>Line</button><button data-preset="quadratic" class="selected" aria-pressed="true"><span>∪</span>Parabola</button><button data-preset="cubic"><span>∿</span>Cubic</button></div>
+        <p class="hint" id="dataset-description">A curved dataset. Try fitting it with different degrees.</p>
+        <div class="inline"><label for="count">Sample points</label><output id="count-value">100</output></div>
+        <input id="count" type="range" min="20" max="300" step="20" value="100">
+        <div class="inline"><label for="noise">Sample noise</label><output id="noise-value">0.08</output></div>
+        <input id="noise" type="range" min="0" max="0.3" step="0.01" value="0.08">
+        <div class="two"><button id="resample">Resample</button><button id="import-open">Import CSV</button></div>
+        <div class="divider"></div>
+        <div class="two"><div><label for="rate">Learning rate</label><select id="rate"><option value="0.001">0.001</option><option value="0.01">0.01</option><option value="0.05">0.05</option><option value="0.1" selected>0.1</option><option value="0.2">0.2</option></select></div><div><label for="seed">Random seed</label><input id="seed" type="number" min="0" max="999999" value="42"></div></div>
+        <button id="apply" class="wide">Apply & reset model</button>
+        <p class="hint">Linear output · backpropagation · batch gradient descent</p>
+        <div class="divider"></div>
+        <div class="section-title compact"><h2>Training</h2><span id="status" class="status">Ready</span></div>
+        <button id="train" class="primary wide">▶ Start training</button>
+        <div class="two"><button id="step">Step 1 epoch</button><button id="reset">Reset weights</button></div>
+        <p class="hint">One epoch computes gradients over all training points, then updates the coefficients once. 20% held out when at least 5 points exist.</p>
+      </aside>
+      <section class="panel map-panel">
+        <div class="panel-head"><div class="section-title"><span class="number">02</span><h2>Regression plot</h2></div><span id="point-count" class="subtle">100 points</span></div>
+        <div class="map-toolbar"><div class="segmented" role="group" aria-label="Canvas action"><button id="draw" class="selected" aria-pressed="true">Add points</button><button id="inspect" aria-pressed="false">Inspect</button></div><button id="clear" class="text-button">Clear</button></div>
+        <div class="plot-wrap"><span class="axis-y">y</span><canvas id="map" width="600" height="600" aria-label="Regression plot. Hold and drag to paint points. y increases upwards."></canvas><div class="axis-ticks"><span>−1</span><span>0</span><span>1 x</span></div></div>
+        <div class="map-legend"><span><i class="dot mint"></i>Training</span><span><i class="dot violet"></i>Test</span><span class="fit-key">Fitted curve</span></div>
+        <label class="residual-toggle"><input id="residuals" type="checkbox" checked> Show residuals</label>
+        <p class="hint map-hint">Hold and drag to add points. Vertical lines show prediction errors. x and y range from −1 to 1; positive y is upwards.</p>
+        <div class="point-input"><label for="px">x<input id="px" type="number" min="-1" max="1" step=".01" value="0.3"></label><label for="py">y<input id="py" type="number" min="-1" max="1" step=".01" value="0.2"></label><button id="point-action">Add point</button></div>
+      </section>
+      <section class="results">
+        <div class="panel metrics">
+          <div><span class="metric-label">Epoch</span><strong id="epoch">0</strong><small id="epoch-caption">of 2,000 target</small></div>
+          <div><span class="metric-label">Training loss</span><strong id="loss">—</strong><small>½ mean squared error</small></div>
+          <div><span class="metric-label">Test RMSE</span><strong id="test-rmse">—</strong><small>lower is better</small></div>
+          <form id="epoch-form" class="epoch-controls"><label for="epoch-target">Epoch target<input id="epoch-target" type="number" min="1" step="1" value="2000" required></label><button type="submit">Set target</button><p class="hint">Increase the target to continue with the learned coefficients.</p></form>
+        </div>
+        <div class="panel network-panel">
+          <div class="panel-head"><div class="section-title"><span class="number">03</span><h2>Inside the model</h2></div><span id="architecture" class="subtle">3 coefficients</span></div>
+          <div class="model-flow"><span>x</span><b>→</b><span id="features-label">1, x, x²</span><b>→</b><span>Σ wᵢxⁱ</span><b>→</b><span>ŷ</span></div>
+          <p id="equation" class="equation" aria-label="Learned equation"></p>
+          <div class="prediction"><div><span class="metric-label">Prediction at x = <span id="probe-x">0.30</span></span><p>Continuous output ŷ</p></div><strong id="prediction">0.000</strong></div>
+          <div class="coefficient-wrap"><table><caption>Coefficients and backpropagation</caption><thead><tr><th>Term</th><th>Weight</th><th>∂Loss/∂w</th><th>Next Δw</th></tr></thead><tbody id="coefficients"></tbody></table></div>
+          <p class="hint">Gradients use the training set. The next update is Δw = −learning rate × gradient. All coefficients start at zero.</p>
+          <p class="hint backprop-formula">ŷ = Σ wᵢxⁱ<br>∂Loss/∂wᵢ = mean((ŷ − y) × xⁱ)</p>
+        </div>
+        <div class="panel loss-panel"><div class="panel-head"><h2>Learning curve</h2><div class="chart-key"><span class="train-key">Training</span><span class="test-key">Test</span></div></div><canvas id="curve" width="600" height="180" aria-label="Training and test loss over epochs"></canvas><div class="curve-footer"><span id="r2">Test R²: —</span><span id="split-count">80 train / 20 test</span></div></div>
+      </section>
+    </div>
+    <p id="message" class="message" role="status" aria-live="polite">Choose a degree and start training, or draw your own data.</p>
+    <footer><span>1 input · polynomial features · continuous predictions</span></footer>
+  </main>
+  <dialog id="about-dialog"><button class="close" data-close="about-dialog" aria-label="Close">×</button><p class="eyebrow">THE IDEA</p><h2>Learn the curve, one update at a time.</h2>
+    <p>The model predicts ŷ = w₀ + w₁x + w₂x² + … + wₙxⁿ. Degree 1 is a straight line. Degree 2 includes x²; degree 3 adds x³. It is still linear regression in its coefficients, even when the curve is nonlinear in x.</p>
+    <p>Backpropagation follows the error backwards from ½(ŷ − y)² through the sum to every coefficient. The derivative for wᵢ is (ŷ − y)xⁱ. Each epoch averages those gradients over training points and updates wᵢ ← wᵢ − rate × gradient. There is no sigmoid, no hidden layer, and no closed-form solver.</p>
+    <p>Compare degree 1 and degree 2 on Parabola to see underfitting. Try a higher degree with noisy or sparse data to explore overfitting. Higher powers can learn slowly because polynomial features are correlated.</p>
+    <p>Test points never update the coefficients. RMSE measures error in y units. R² can be negative when predictions are worse than the test-set mean; it is undefined for constant targets. Small datasets may have no test set.</p>
+    <p>Drawing, importing, resampling, or changing model settings resets training. Changing the epoch target keeps learned coefficients. The curve may predict outside −1 to 1; the plot clips it at its edges, while numeric inspection shows the full output. Changing pages or refreshing starts a new experiment.</p>
+  </dialog>
+  <dialog id="import-dialog"><button class="close" data-close="import-dialog" aria-label="Close">×</button><p class="eyebrow">YOUR DATA</p><h2>Bring your own points.</h2><p>Use two columns, x,y, with an optional header. Both values must be between −1 and 1. Import 2–1,000 rows. Importing replaces the data and resets training.</p><label for="csv-file">Choose a CSV file</label><input id="csv-file" type="file" accept=".csv,text/csv"><label for="csv">Or paste CSV</label><textarea id="csv" rows="7" placeholder="x,y&#10;-0.8,0.3&#10;0,-0.5&#10;0.8,0.3"></textarea><p id="import-error" role="alert"></p><button id="import-confirm" class="primary">Use these points</button></dialog>
+</body>
+</html>

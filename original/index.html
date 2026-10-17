@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+    <head>
+        <link href="style.css" rel="stylesheet">
+    </head>
+
+    <body>
+        <canvas id="NeuralCanvas"></canvas>
+        <canvas id="ChartCanvas"></canvas>
+   
+
+        <script src="utils.js"></script>
+        <script src="neural.js"></script>
+        <script src="visualiser.js"></script>
+        <script src="main.js"></script>
+
+        <button id="label1" style="background-color: white; width: 50px;; height: 30px;" onclick="SetLabel(1)"></button>
+        <button id="label2" style="background-color: black; width: 50px;; height: 30px;" onclick="SetLabel(0)"></button>
+        <button id="run" style="background-color: white;" onclick="start()">Run</button>
+
+    </body>
+</html>

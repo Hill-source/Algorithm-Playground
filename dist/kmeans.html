@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>K-means · Algorithm Playground</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="kmeans.css"><script type="module" src="kmeans-app.js"></script></head>
+<body>
+<header><a class="brand" href="./"><span class="brand-mark">⌘</span>Algorithm<span>Playground</span></a><nav class="experiment-nav" aria-label="Experiments"><a href="./">Neural network</a><a href="regression.html">Regression</a><a href="kmeans.html" aria-current="page">K-means</a></nav><button id="about">How it works</button></header>
+<main>
+  <div class="intro"><p class="eyebrow">EXPERIMENT 03 / K-MEANS CLUSTERING</p></div>
+  <div class="workspace">
+    <aside class="panel controls">
+      <div class="section-title"><span class="number">01</span><h2>Build your experiment</h2></div>
+      <label for="k">Number of clusters · k</label><select id="k"><option value="1">1 cluster</option><option value="2">2 clusters</option><option value="3" selected>3 clusters</option><option value="4">4 clusters</option><option value="5">5 clusters</option><option value="6">6 clusters</option><option value="7">7 clusters</option></select>
+      <p class="hint">Each cluster has a color and a center. Changing k preserves your points and restarts clustering.</p>
+      <label>Dataset</label><div class="presets" role="group" aria-label="Sample datasets"><button data-preset="blobs" class="selected"><span>⠿</span>Blobs</button><button data-preset="uniform"><span>⁙</span>Scatter</button><button data-preset="rings"><span>◎</span>Rings</button></div>
+      <p class="hint" id="dataset-description">Four groups. Try different values of k on the same data.</p>
+      <div class="inline"><label for="count">Sample points</label><output id="count-value">120</output></div><input id="count" type="range" min="20" max="300" step="20" value="120">
+      <div class="two"><button id="resample">Resample</button><button id="import-open">Import CSV</button></div>
+      <div class="divider"></div><label for="seed">Random seed</label><input id="seed" type="number" min="0" max="999999" value="42"><button id="apply" class="wide">Apply & reset centers</button><p class="hint">K-means++ initialization · Euclidean distance</p>
+      <div class="divider"></div><div class="section-title compact"><h2>Clustering</h2><span id="status" class="status">Ready</span></div>
+      <button id="run" class="primary wide">▶ Start clustering</button><div class="two"><button id="step">Assign points</button><button id="reset">Reset centers</button></div>
+      <label for="speed">Animation speed</label><select id="speed"><option value="1000">Slow · 1 second</option><option value="500" selected>Normal · 0.5 seconds</option><option value="100">Fast · 0.1 seconds</option></select>
+      <p class="hint">Each iteration assigns points to their nearest center, then moves each center to the mean of its assigned points.</p>
+    </aside>
+    <section class="panel map-panel">
+      <div class="panel-head"><div class="section-title"><span class="number">02</span><h2>Cluster map</h2></div><span id="point-count" class="subtle">120 points</span></div>
+      <div class="map-toolbar"><div class="segmented" role="group" aria-label="Canvas action"><button id="draw" class="selected" aria-pressed="true">Add points</button><button id="inspect" aria-pressed="false">Inspect</button></div><button id="clear" class="text-button">Clear</button></div>
+      <div id="cluster-buttons" class="classes color-picker" role="group" aria-label="Cluster to highlight"></div>
+      <div class="plot-wrap"><span class="axis-y">y</span><canvas id="map" width="600" height="600" aria-label="Cluster map. Drag to draw unlabeled points. In Inspect mode, select a point to see its distances to every center."></canvas><div class="axis-ticks"><span>0</span><span>0.5</span><span>1 x</span></div></div>
+      <div class="cluster-options"><label><input id="connections" type="checkbox" checked> Point-to-center lines</label><label><input id="regions" type="checkbox" checked> Nearest-center regions</label></div>
+      <p class="hint map-hint">Diamonds are centers. Rings mark their previous positions. Select a cluster above to highlight every point used in its next mean. Hold and drag to add unlabeled points.</p>
+      <div class="point-input"><label for="px">x<input id="px" type="number" min="0" max="1" step=".01" value="0.5"></label><label for="py">y<input id="py" type="number" min="0" max="1" step=".01" value="0.5"></label><button id="point-action">Add point</button></div>
+    </section>
+    <section class="results">
+      <div class="panel metrics"><div><span class="metric-label">Iteration</span><strong id="iteration">0</strong><small>completed center updates</small></div><div><span class="metric-label">Inertia</span><strong id="inertia">—</strong><small>sum of squared distances</small></div><div><span class="metric-label">Center shift</span><strong id="shift">—</strong><small>largest move in last update</small></div></div>
+      <div class="panel network-panel"><div class="panel-head"><div class="section-title"><span class="number">03</span><h2>Inside the clusters</h2></div></div>
+        <div class="phase-card"><span id="phase-title">Next: assign points</span><p id="phase-detail">Compare every point with every center.</p></div>
+        <div id="centers" class="center-list"></div>
+        <div class="cluster-detail"><h3 id="selection-title">All clusters</h3><p id="selection-detail">Select a cluster to see how its center is calculated.</p><p id="point-detail">Inspect the map to see a point’s distance to each center.</p><div id="distances"></div></div>
+      </div>
+      <div class="panel loss-panel"><div class="panel-head"><h2>Clustering progress</h2><span class="subtle">Inertia ↓</span></div><canvas id="curve" width="600" height="180" aria-label="Inertia after each assignment or center update"></canvas><div class="curve-footer"><span id="assigned">0 assigned</span><span>All points participate</span></div></div>
+    </section>
+  </div>
+  <p id="message" class="message" role="status" aria-live="polite">Centers are initialized. Assign points to begin.</p><footer><span>Unsupervised learning · up to 7 clusters · no target labels</span></footer>
+</main>
+<dialog id="about-dialog"><button class="close" data-close="about-dialog" aria-label="Close">×</button><p class="eyebrow">THE IDEA</p><h2>Assign, average, repeat.</h2><p>K-means groups unlabeled points into k clusters. K-means++ chooses initial centers from your data, favoring points far from centers already chosen. The seed makes this repeatable.</p><ol><li><b>Assign:</b> compare each point with all centers and choose the nearest by Euclidean distance.</li><li><b>Update:</b> replace each center with the arithmetic mean of every point currently assigned to it.</li><li>Repeat until assignments stop changing.</li></ol><p>Use the step button to separate assignment from center movement. Colored point-to-center lines show membership. Click a cluster to highlight its members and see their mean. Inspect a point to compare its distances to all centers.</p><p>After a center update, point colors still show the previous assignment until the next assignment step. Background regions always show the nearest current center. Inertia is the sum of squared distances using the displayed assignments and centers.</p><p>All points participate; there is no training/test split or target color. Cluster colors are arbitrary IDs. Empty clusters keep their old centers, so fewer than k clusters may have members, especially with repeated coordinates. Exact distance ties retain the previous assignment if possible, otherwise they choose the first center.</p><p>K-means can settle on different solutions depending on initialization. It prefers compact groups and cannot recover concentric rings as separate clusters. Changing k, data, or seed resets clustering. Page navigation and reload start a new experiment.</p></dialog>
+<dialog id="import-dialog"><button class="close" data-close="import-dialog" aria-label="Close">×</button><h2>Import points</h2><p>Paste x,y columns with an optional header. Coordinates must be 0–1. Up to 1,000 rows; at least k points are needed to initialize. No color labels are required.</p><label for="csv-file">Choose a CSV file</label><input id="csv-file" type="file" accept=".csv,text/csv"><label for="csv">Or paste CSV</label><textarea id="csv" rows="7" placeholder="x,y&#10;0.2,0.3&#10;0.8,0.7"></textarea><p id="import-error" role="alert"></p><button id="import-confirm" class="primary">Use these points</button></dialog>
+</body></html>

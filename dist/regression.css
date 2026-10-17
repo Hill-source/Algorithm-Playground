@@ -1,0 +1,16 @@
+.residual-toggle { margin: 14px 22px 0; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.residual-toggle input { width: auto; accent-color: var(--mint); }
+.fit-key::before { content: ''; display: inline-block; width: 18px; height: 2px; background: #ffcc85; margin-right: 6px; }
+.model-flow { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin: 8px 20px 20px; font-family: monospace; font-size: 13px; }
+.model-flow span { border: 1px solid var(--border); padding: 8px; border-radius: 7px; background: #101722; }
+.model-flow b { color: var(--mint); }
+.equation { margin: 18px 22px; overflow-wrap: anywhere; color: #ffcc85; font: 13px/1.8 monospace; }
+.coefficient-wrap { margin: 22px; overflow-x: auto; }
+.coefficient-wrap table { width: 100%; border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }
+.coefficient-wrap caption { text-align: left; margin-bottom: 12px; font-size: 13px; }
+.coefficient-wrap th, .coefficient-wrap td { padding: 8px 4px; border-bottom: 1px solid var(--border); text-align: right; white-space: nowrap; }
+.coefficient-wrap th { color: var(--muted); font-weight: 400; }
+.coefficient-wrap th:first-child, .coefficient-wrap td:first-child { text-align: left; }
+.coefficient-wrap td:nth-child(2) { color: var(--mint); }
+.backprop-formula { font-family: monospace; line-height: 1.9; }
+.prediction strong { color: var(--mint); }

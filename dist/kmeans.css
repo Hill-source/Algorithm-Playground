@@ -1,0 +1,15 @@
+.cluster-options { display: flex; flex-wrap: wrap; gap: 10px 16px; margin: 18px 22px; font-size: 12px; color: var(--muted); }
+.cluster-options label { display: flex; align-items: center; gap: 6px; }
+.cluster-options input { width: auto; accent-color: var(--mint); }
+.phase-card { margin: 0 20px 18px; padding: 14px; background: #83e8ce0a; border: 1px solid #83e8ce35; border-radius: 8px; }
+.phase-card span { color: var(--mint); font-size: 14px; }
+.phase-card p { font-size: 12px; color: var(--muted); margin: 7px 0 0; }
+.center-list { margin: 20px; display: grid; gap: 7px; }
+.center-row { display: grid; grid-template-columns: 1fr auto; text-align: left; gap: 4px 8px; width: 100%; }
+.center-row small { grid-column: 1 / -1; color: var(--muted); font-size: 11px; font-weight: 400; }
+.center-row .dot { display: inline-block; margin-right: 6px; }
+.cluster-detail { border-top: 1px solid var(--border); margin: 20px; padding-top: 18px; }
+.cluster-detail h3 { font-size: 14px; margin-bottom: 10px; }
+.cluster-detail p { font-size: 12px; line-height: 1.7; color: var(--muted); overflow-wrap: anywhere; }
+.distance-row { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; padding: 5px 0; }
+.center-row.selected { border-color: var(--mint); }
